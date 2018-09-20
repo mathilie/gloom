@@ -15,7 +15,21 @@ void runProgram(GLFWwindow* window)
     // Set default colour after clearing the colour buffer
     glClearColor(0.3f, 0.5f, 0.8f, 1.0f);
 
+
     // Set up your scene here (create Vertex Array Objects, etc.)
+	
+	static const GLfloat coords[] = { 
+		-0.9f, -0.9f, 0.0f,
+		0.9f, -0.9f, 0.0f,
+		0.0f , 0.9f , 0.0f };
+	GLuint array;
+	glGenVertexArrays(1, &array);
+	glBindVertexArray(array);
+	GLuint buffer;
+	glGenBuffers(1, &buffer);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(coords), coords, GL_STATIC_DRAW);
+	
 
     // Rendering Loop
     while (!glfwWindowShouldClose(window))
@@ -24,6 +38,12 @@ void runProgram(GLFWwindow* window)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // Draw your scene here
+		glEnableVertexAttribArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, buffer);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+		glDrawArrays(GL_TRIANGLES,0,3);
+		glDisableVertexAttribArray(0);
+		
 
         // Handle other events
         glfwPollEvents();
@@ -31,8 +51,10 @@ void runProgram(GLFWwindow* window)
 
         // Flip buffers
         glfwSwapBuffers(window);
+		printGLError();
     }
 }
+
 
 
 void handleKeyboardInput(GLFWwindow* window)

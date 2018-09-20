@@ -1,0 +1,12 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\build",
+    "\\gloom",
+    "\\gloom\\shaders",
+    "\\gloom\\src",
+    "\\gloom\\vendor"
+  ],
+  "SelectedNode": "\\gloom\\src\\main.cpp",
+  "PreviewInSolutionExplorer": false
+}

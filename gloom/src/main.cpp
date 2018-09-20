@@ -66,6 +66,49 @@ GLFWwindow* initialise()
     return window;
 }
 
+char *textFileRead(char *fn) {
+	FILE *fp;
+	char *content = NULL;
+
+	int count = 0;
+
+	if (fn != NULL) {
+		fp = fopen(fn, "rb");
+
+		if (fp != NULL) {
+			fseek(fp, 0, SEEK_END);
+			count = ftell(fp);
+			rewind(fp);
+			if (count > 0) {
+				content = (char *)malloc(sizeof(char) * (count + 1));
+				count = fread(content, sizeof(char), count, fp);
+				content[count] = '\0';
+			}
+			fclose(fp);
+		}
+	}
+	return content;
+}
+
+void initShader() {
+	unsigned int progID = glCreateProgram();
+	GLuint vshader = glCreateShader(GL_VERTEX_SHADER);
+	GLuint fshader = glCreateShader(GL_FRAGMENT_SHADER);
+	
+	const char *vs = textFileRead("C:\\users\\mathias\\programmering\\gloom\\gloom\\shaders\\simple.vert");
+	const char *fs = textFileRead("C:\\users\\mathias\\programmering\\gloom\\gloom\\shaders\\simple.frag");
+	
+	glShaderSource(vshader, 1, &vs, 0);
+	glShaderSource(fshader, 1, &fs, 0);
+	printf(vs);
+	printf(fs);
+	glCompileShader(vshader);
+	glCompileShader(fshader);
+	glAttachShader(progID, vshader);
+	glAttachShader(progID, fshader);
+	glLinkProgram(progID);
+	glUseProgram(progID);
+}
 
 int main(int argc, char* argb[])
 {
@@ -73,6 +116,7 @@ int main(int argc, char* argb[])
     GLFWwindow* window = initialise();
 
     // Run an OpenGL application using this window
+	initShader();
     runProgram(window);
 
     // Terminate GLFW (no need to call glfwDestroyWindow)
