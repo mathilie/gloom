@@ -99,9 +99,8 @@ void initShader() {
 	unsigned int progID = glCreateProgram();
 	GLuint vshader = glCreateShader(GL_VERTEX_SHADER);
 	GLuint fshader = glCreateShader(GL_FRAGMENT_SHADER);
-	
-	const char *vs = textFileRead("C:\\users\\mathias\\programmering\\gloom\\gloom\\shaders\\simple.vert");
-	const char *fs = textFileRead("C:\\users\\mathias\\programmering\\gloom\\gloom\\shaders\\simple.frag");
+	const char *vs = textFileRead("..\\gloom\\shaders\\simple.vert");
+	const char *fs = textFileRead("..\\gloom\\shaders\\simple.frag");
 	
 	glShaderSource(vshader, 1, &vs, 0);
 	glShaderSource(fshader, 1, &fs, 0);
