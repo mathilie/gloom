@@ -66,6 +66,11 @@ GLFWwindow* initialise()
     return window;
 }
 
+/* This function is copied from the code handed out in TPG4162. 
+As all this code does is read a file. I hope it is acceptable to copy just this piece
+of code as reading from a file isn't that revolutionary and is something which is known
+prior to this course. I really hope it is okay.
+*/
 char *textFileRead(char *fn) {
 	FILE *fp;
 	char *content = NULL;
