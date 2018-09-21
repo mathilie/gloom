@@ -3,27 +3,12 @@
 #include "gloom/gloom.hpp"
 GLuint array;
 GLuint buffer;
+GLuint colorBuffer;
 
 void makeAndLoadVertexes(GLfloat coords[], size_t lengthCoords, GLfloat colors[], size_t colorsLength);
 
-void runProgram(GLFWwindow* window)
-{
-    // Enable depth (Z) buffer (accept "closest" fragment)
-    glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LESS);
-
-    // Configure miscellaneous OpenGL settings
-    glEnable(GL_CULL_FACE);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-    // Set default colour after clearing the colour buffer
-    glClearColor(0.3f, 0.5f, 0.8f, 1.0f);
-
-
-    // Set up your scene here (create Vertex Array Objects, etc.)
-	
-	static const GLfloat coords[] = { 
+void task1() {
+	static const GLfloat coords[] = {
 		-1.0f, -0.9f, 0.0f,
 		-0.8f, -0.9f, 0.0f,
 		-0.9f , 0.9f , 0.0f,
@@ -38,7 +23,7 @@ void runProgram(GLFWwindow* window)
 		-0.3f , 0.9f , 0.0f,
 		-0.2f, -0.9f, 0.0f,
 		0.0f, -0.9f, 0.0f,
-		-0.1f , 0.9f , 0.0f};
+		-0.1f , 0.9f , 0.0f };
 	static const GLfloat colors[]{
 		1.0f, 0.0f, 0.0f,
 		0.0f, 1.0f, 0.0f,
@@ -63,11 +48,84 @@ void runProgram(GLFWwindow* window)
 	glGenBuffers(1, &buffer);
 	glBindBuffer(GL_ARRAY_BUFFER, buffer);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(coords), coords, GL_STATIC_DRAW);
-	
-	GLuint colorBuffer;
+
 	glGenBuffers(1, &colorBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, colorBuffer);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(colors), colors, GL_STATIC_DRAW);
+}
+
+void drawTask1() {
+	glBindVertexArray(array);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+	glBindBuffer(GL_ARRAY_BUFFER, colorBuffer);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+	glDrawArrays(GL_TRIANGLES, 0, 15);
+}
+
+void task2() {
+	static const GLfloat coords[] = {
+		-1.0f, -1.0f, -0.5f,
+		1.0f, -1.0f, -0.5f,
+		0.0f , -0.2f , -0.5f,
+		-0.7f, -1.0f, 0.0f,
+		0.7f, -1.0f, 0.0f,
+		0.0f , 0.4f , 0.0f,
+		-0.4f, -1.0f, 0.5f,
+		0.4f, -1.0f, 0.5f,
+		0.0f , 0.9f , 0.5f };
+	static const GLfloat colors[]{
+		1.0f, 0.0f, 0.0f, 0.3f,
+		1.0f, 0.0f, 0.0f, 0.3f,
+		1.0f, 0.0f, 0.0f, 0.3f,
+		0.0f, 1.0f, 0.0f, 0.5f,
+		0.0f, 1.0f, 0.0f, 0.5f,
+		0.0f, 1.0f, 0.0f, 0.5f,
+		0.0f, 0.0f, 1.0f, 0.8f,
+		0.0f, 0.0f, 1.0f, 0.8f,
+		0.0f, 0.0f, 1.0f, 0.8f
+		};
+	glGenVertexArrays(1, &array);
+	glBindVertexArray(array);
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+	glGenBuffers(1, &buffer);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(coords), coords, GL_STATIC_DRAW);
+
+	glGenBuffers(1, &colorBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, colorBuffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(colors), colors, GL_STATIC_DRAW);
+}
+
+void drawTask2() {
+	glBindVertexArray(array);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+	glBindBuffer(GL_ARRAY_BUFFER, colorBuffer);
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, NULL);
+	glDrawArrays(GL_TRIANGLES, 6, 3);
+	glDrawArrays(GL_TRIANGLES, 3, 3);
+	glDrawArrays(GL_TRIANGLES, 0, 3);
+}
+void runProgram(GLFWwindow* window)
+{
+    // Enable depth (Z) buffer (accept "closest" fragment)
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
+
+    // Configure miscellaneous OpenGL settings
+    glEnable(GL_CULL_FACE);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    // Set default colour after clearing the colour buffer
+    glClearColor(0.3f, 0.5f, 0.8f, 1.0f);
+
+
+    // Set up your scene here (create Vertex Array Objects, etc.)
+	task2();
+
 
 	//makeAndLoadVertexes(coords, 75, colors, 75);
     // Rendering Loop
@@ -77,12 +135,8 @@ void runProgram(GLFWwindow* window)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // Draw your scene here
-		glBindVertexArray(array);
-		glBindBuffer(GL_ARRAY_BUFFER, buffer);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-		glBindBuffer(GL_ARRAY_BUFFER, colorBuffer);
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-		glDrawArrays(GL_TRIANGLES, 0, 15);
+		drawTask2();
+
         // Handle other events
         glfwPollEvents();
         handleKeyboardInput(window);
@@ -94,19 +148,7 @@ void runProgram(GLFWwindow* window)
 }
 
 void makeAndLoadVertexes(GLfloat* coords, size_t lengthCoords, GLfloat colors[], size_t colorsLength) {
-	/*GLfloat *dataarray = new GLfloat[lengthCoords + colorsLength];
-	for (unsigned int i = 0; i <lengthCoords / 3; i++) {
-		dataarray[i * 7] = coords[i * 3];
-		dataarray[i * 7 + 1] = coords[i * 3 + 1];
-		dataarray[i * 7 + 2] = coords[i * 3 + 2];
-		dataarray[i * 7 + 3] = colors[i * 4];
-		dataarray[i * 7 + 4] = colors[i * 4 + 1];
-		dataarray[i * 7 + 5] = colors[i * 4 + 2];
-		dataarray[i * 7 + 6] = colors[i * 4 + 3];
-	}*/
 
-	//delete[] dataarray;
-	//return dataarray;
 }
 
 
