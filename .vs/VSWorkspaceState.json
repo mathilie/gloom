@@ -3,10 +3,13 @@
     "",
     "\\build",
     "\\gloom",
+    "\\gloom\\pathFiles",
+    "\\gloom\\res",
     "\\gloom\\shaders",
     "\\gloom\\src",
+    "\\gloom\\src\\gloom",
     "\\gloom\\vendor"
   ],
-  "SelectedNode": "\\gloom\\src\\main.cpp",
+  "SelectedNode": "\\gloom\\src\\gloom",
   "PreviewInSolutionExplorer": false
 }
