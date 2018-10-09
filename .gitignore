@@ -1,2 +1,6 @@
 [Bb]uild/*
 !*/.gitkeep
+.vs/
+.vs/ProjectSettings.json
+.vs/VSWorkspaceState.json
+.vs/slnx.sqlite
