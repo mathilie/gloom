@@ -7,5 +7,5 @@ void main()
 {
 	outVertexColour = vertexColour;
 	vec4 position4 = vec4(position, 1.0f);
-    gl_Position = transpose(imat)*position4;
+    gl_Position = imat*position4;
 }

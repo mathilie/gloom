@@ -25,7 +25,7 @@ GLfloat transmatrix[] = {
 glm::vec3 cameraPosition = { 0.0f, 0.0f, -1.0f };
 glm::vec2 cameraAngle = {0.0f,0.0f};
 
-Gloom::Camera cam;
+Gloom::Camera cam(glm::vec3(0.0f, 0.0f, 2.0f), 5.0f, 0.005f);
 Mesh chessboard = generateChessboard(100, 100, 5, {0.0f,0.0f,0.0f,1.0f}, {1.0f,1.0f,1.0f,1.0f});
 
 
@@ -68,28 +68,7 @@ void task4() {
 
 void drawTask4() {
 	glm::mat4x4 persMatrix = glm::perspective(3.14f * 2 / 3, 1.0f, 0.1f, 0.0f);
-	GLfloat translationMatrix[] = {
-		1.0f,0.0f,0.0f,cameraPosition[0],
-		0.0f,1.0f,0.0f,cameraPosition[1],
-		0.0f,0.0f,1.0f,cameraPosition[2],
-		0.0f,0.0f,0.0f,1.0f
-	};
-	GLfloat rotationMatrix[] = {
-		cos(cameraAngle[0]),0.0f, sin(cameraAngle[0]),0.0f,
-		0.0f,1.0f,0.0f,0.0f,
-		-sin(cameraAngle[0]),0.0f,cos(cameraAngle[0]),0.0f,
-		0.0f,0.0f,0.0f,1.0f
-	};
-	GLfloat rotationMatrix2[] = {
-		1.0f,0.0f, 0.0f,0.0f,
-		0.0f,cos(cameraAngle[1]),sin(cameraAngle[1]),0.0f,
-		0.0f,-sin(cameraAngle[1]),cos(cameraAngle[1]),0.0f,
-		0.0f,0.0f,0.0f,1.0f
-	};
-	glm::mat4x4 transMat = glm::make_mat4x4(translationMatrix);
-	glm::mat4x4 rotMat = glm::make_mat4x4(rotationMatrix);
-	glm::mat4x4 rotMat2 = glm::make_mat4x4(rotationMatrix2);
-	glm::mat4x4 transformation = transMat*rotMat*rotMat2*transpose(persMatrix);
+	glm::mat4x4 transformation = persMatrix*cam.getViewMatrix();
 	glBindVertexArray(array);
 	glBindBuffer(GL_ARRAY_BUFFER, buffer);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
@@ -104,6 +83,13 @@ void initTask() {
 
 void drawTask() {
 	drawTask4();
+}
+
+void handleInputs(GLFWwindow* window) {
+	handleKeyboardInput(window);
+	double xpos, ypos;
+	glfwGetCursorPos(window, &xpos, &ypos);
+	cam.handleCursorPosInput(xpos, ypos);
 }
 void runProgram(GLFWwindow* window)
 {
@@ -123,22 +109,22 @@ void runProgram(GLFWwindow* window)
     // Set up your scene here (create Vertex Array Objects, etc.)
 	initTask();
 
-	getTimeDeltaSeconds();
+
 	//makeAndLoadVertexes(coords, 75, colors, 75);
     // Rendering Loop
+	double delta=getTimeDeltaSeconds();
     while (!glfwWindowShouldClose(window))
     {
-		
         // Clear colour and depth buffers
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+		delta = getTimeDeltaSeconds();
         // Draw your scene here
 		drawTask();
         // Handle other events
         glfwPollEvents();
-        handleKeyboardInput(window);
-		cam.updateCamera(getTimeDeltaSeconds());
-        // Flip buffers
+		handleInputs(window);
+		cam.updateCamera(delta);
+		// Flip buffers
         glfwSwapBuffers(window);
 		printGLError();
     }
@@ -149,53 +135,22 @@ void runProgram(GLFWwindow* window)
 void handleKeyboardInput(GLFWwindow* window)
 {
     // Use escape key for terminating the GLFW window
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-    {
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS){
         glfwSetWindowShouldClose(window, GL_TRUE);
     }
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) cam.handleKeyboardInputs(GLFW_KEY_A, GLFW_PRESS);
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) cam.handleKeyboardInputs(GLFW_KEY_D, GLFW_PRESS);
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) cam.handleKeyboardInputs(GLFW_KEY_S, GLFW_PRESS);
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) cam.handleKeyboardInputs(GLFW_KEY_W, GLFW_PRESS);
+	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) cam.handleKeyboardInputs(GLFW_KEY_E, GLFW_PRESS);
+	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) cam.handleKeyboardInputs(GLFW_KEY_Q, GLFW_PRESS);
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_RELEASE) cam.handleKeyboardInputs(GLFW_KEY_A, GLFW_RELEASE);
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_RELEASE) cam.handleKeyboardInputs(GLFW_KEY_D, GLFW_RELEASE);
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_RELEASE) cam.handleKeyboardInputs(GLFW_KEY_S, GLFW_RELEASE);
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_RELEASE) cam.handleKeyboardInputs(GLFW_KEY_W, GLFW_RELEASE);
+	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_RELEASE) cam.handleKeyboardInputs(GLFW_KEY_E, GLFW_RELEASE);
+	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_RELEASE) cam.handleKeyboardInputs(GLFW_KEY_Q, GLFW_RELEASE);
+	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) cam.handleMouseButtonInputs(GLFW_MOUSE_BUTTON_LEFT, GLFW_PRESS);
+	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_RELEASE) cam.handleMouseButtonInputs(GLFW_MOUSE_BUTTON_LEFT, GLFW_RELEASE);
 
-	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
-	{
-		cameraPosition[1] = cameraPosition[1]-0.01f;
-	}
-	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
-	{
-		cameraPosition[1] = cameraPosition[1]+0.01f;
-	}
-	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
-	{
-		cameraPosition[0] = cameraPosition[0]+cos(cameraAngle[0])*0.01f;
-		cameraPosition[2] = cameraPosition[2]+sin(cameraAngle[0])*0.01f;
-	}
-	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
-	{
-		cameraPosition[0] = cameraPosition[0]-cos(cameraAngle[0])*0.01f;
-		cameraPosition[2] = cameraPosition[2]-sin(cameraAngle[0])*0.01f;
-	}
-	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
-	{
-		cameraPosition[0] = cameraPosition[0]-sin(cameraAngle[0])*0.01f;
-		cameraPosition[2] = cameraPosition[2]+cos(cameraAngle[0])*0.01f;
-	}
-	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
-	{
-		cameraPosition[0] = cameraPosition[0]+sin(cameraAngle[0])*0.01f;
-		cameraPosition[2] = cameraPosition[2]-cos(cameraAngle[0])*0.01f;
-	}
-	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-	{
-		cameraAngle[1] = cameraAngle[1]-0.01f;
-	}
-	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-	{
-		cameraAngle[1] = cameraAngle[1]+0.01f;
-	}
-	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-	{
-		cameraAngle[0] = cameraAngle[0]-0.01f;
-	}
-	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-	{
-		cameraAngle[0] = cameraAngle[0]+0.01f;
-	}
 }
