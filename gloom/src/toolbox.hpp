@@ -1,3 +1,5 @@
+#ifndef TOOLBOX_HPP
+#define TOOLBOX_HPP
 #pragma once
 
 #include <glm/mat4x4.hpp>
@@ -41,3 +43,5 @@ public:
     // Should be called if hasWaypointBeenReached() evaluates to true.
     void advanceToNextWaypoint();
 };
+
+#endif // !

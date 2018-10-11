@@ -12,6 +12,8 @@
 #include <OBJLoader.hpp>
 #include <toolbox.hpp>
 #include <mesh.hpp>
+#include "sceneGraph.hpp"
+#include <stack>
 
 GLuint array;
 GLuint buffer;
@@ -28,6 +30,9 @@ glm::vec2 cameraAngle = {0.0f,0.0f};
 Gloom::Camera cam(glm::vec3(0.0f, 0.0f, 2.0f), 5.0f, 0.005f);
 Mesh chessboard = generateChessboard(100, 100, 5, {0.0f,0.0f,0.0f,1.0f}, {1.0f,1.0f,1.0f,1.0f});
 
+SceneNode* objStack = createSceneNode();
+SceneNode* chessStack = createSceneNode();
+MinecraftCharacter Steve = loadMinecraftCharacterModel("../gloom/res/steve.obj");
 
 void task4() {
 	static const GLfloat coords[] = {
@@ -59,7 +64,7 @@ void task4() {
 	glEnableVertexAttribArray(1);
 	glGenBuffers(1, &buffer);
 	glBindBuffer(GL_ARRAY_BUFFER, buffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(coords), coords, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Steve), Steve, GL_STATIC_DRAW);
 
 	glGenBuffers(1, &colorBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, colorBuffer);
@@ -75,7 +80,7 @@ void drawTask4() {
 	glBindBuffer(GL_ARRAY_BUFFER, colorBuffer);
 	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, NULL);
 	glUniformMatrix4fv(2, 1, GL_FALSE, glm::value_ptr(transformation));
-	glDrawArrays(GL_TRIANGLES, 0, 9);
+	glDrawArrays(GL_TRIANGLES, 0, 3);
 }
 void initTask() {
 	task4();
