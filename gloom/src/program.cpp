@@ -34,8 +34,10 @@ SceneNode* objStack = createSceneNode();
 SceneNode* chessStack = createSceneNode();
 MinecraftCharacter Steve = loadMinecraftCharacterModel("../gloom/res/steve.obj");
 
+
+
 void task4() {
-	static const GLfloat coords[] = {
+	/*static const GLfloat coords[] = {
 		-1.0f, -1.0f, 0.5f,
 		1.0f, -1.0f, 0.5f,
 		0.0f , -0.2f , 0.5f,
@@ -55,20 +57,38 @@ void task4() {
 		0.0f, 0.0f, 1.0f, 0.5f,
 		0.0f, 0.0f, 1.0f, 0.5f,
 		0.0f, 0.0f, 1.0f, 0.5f
-	};
-
+	};/
+	*/
+	
 
 	glGenVertexArrays(1, &array);
 	glBindVertexArray(array);
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
-	glGenBuffers(1, &buffer);
+	//head
+	glGenBuffers(2, &buffer);
 	glBindBuffer(GL_ARRAY_BUFFER, buffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Steve), Steve, GL_STATIC_DRAW);
-
-	glGenBuffers(1, &colorBuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, colorBuffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(colors), colors, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(head), head, GL_STATIC_DRAW);
+	//torso
+	glGenBuffers(2, &buffer);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(torso), torso, GL_STATIC_DRAW);
+	//leftarm
+	glGenBuffers(2, &buffer);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(larm), larm, GL_STATIC_DRAW);
+	//rightarm
+	glGenBuffers(2, &buffer);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(rarm), rarm, GL_STATIC_DRAW);
+	//leftleg
+	glGenBuffers(2, &buffer);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(legl), legl, GL_STATIC_DRAW);
+	//rightleg
+	glGenBuffers(2, &buffer);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(legr), legr, GL_STATIC_DRAW);
 }
 
 void drawTask4() {
@@ -80,7 +100,7 @@ void drawTask4() {
 	glBindBuffer(GL_ARRAY_BUFFER, colorBuffer);
 	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, NULL);
 	glUniformMatrix4fv(2, 1, GL_FALSE, glm::value_ptr(transformation));
-	glDrawArrays(GL_TRIANGLES, 0, 3);
+	glDrawArrays(GL_TRIANGLES, 0, 72);
 }
 void initTask() {
 	task4();
