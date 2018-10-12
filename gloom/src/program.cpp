@@ -22,7 +22,7 @@ GLuint colorBuffer[7];
 Gloom::Camera cam(glm::vec3(1.0f, 1.0f, 10.0f), 5.0f, 0.005f);
 Mesh chessboard = generateChessboard(10, 10, 8, {0.0f,0.0f,0.0f,1.0f}, {1.0f,1.0f,1.0f,1.0f});
 
-SceneNode* root = createSceneNode();
+SceneNode* board = createSceneNode();
 SceneNode* SteveNode = createSceneNode();
 SceneNode* chessNode = createSceneNode();
 MinecraftCharacter Steve = loadMinecraftCharacterModel("../gloom/res/steve.obj");
@@ -43,8 +43,11 @@ void addChildren(Mesh data) { //omtrent noe sånn som dette vi må implementere, m
 
  //lagt til fra handoutsnippet i oppgavetekst
 void visitSceneNode(SceneNode* node, glm::mat4 transformationThusFar) {
-	// Do transformations here
 	glm::mat4 combinedTransformation = (*node).currentTransformationMatrix*transformationThusFar;
+	for (SceneNode* child : node->children) {
+		visitSceneNode(child, combinedTransformation);
+	}
+	// Do transformations here
 	
 	//legges her fordi det ikke gjøres noe rekursivt i  scenenodebesøket, her blir scenenoden lagt til i array
 	int index = (*node).vertexArrayObjectID;
@@ -58,9 +61,7 @@ void visitSceneNode(SceneNode* node, glm::mat4 transformationThusFar) {
 	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, NULL);
 	glUniformMatrix4fv(2, 1, GL_FALSE, glm::value_ptr(persMatrix*viewMatrix));
 	glDrawArrays(GL_TRIANGLE_FAN, 0, 400);
-	for (SceneNode* child : node->children) {
-		visitSceneNode(child, combinedTransformation);
-	}
+
 }
 
 void updatePositions() {
@@ -68,9 +69,10 @@ void updatePositions() {
 }
 
 void buildSceneGraph() {
+	
 	SceneNode* bodyRoot = createSceneNode();
 	(*bodyRoot).referencePoint = float3(0.0f, 0.0f, 0.0f);
-
+	
 	SceneNode* torso = createSceneNode();
 	(*torso).referencePoint = float3(0.0f, 12.0f, 0.0f);
 	(*torso).vertexArrayObjectID = array[0];
@@ -81,7 +83,7 @@ void buildSceneGraph() {
 	glBufferData(GL_ARRAY_BUFFER, (12 + sizeof(GLfloat))*Steve.torso.vertices.size(), &Steve.torso.vertices[0], GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, colorBuffer[0]);
 	glBufferData(GL_ARRAY_BUFFER, (12 + sizeof(GLfloat))*Steve.torso.colours.size(), &Steve.torso.colours[0], GL_STATIC_DRAW);
-
+	
 	SceneNode* leftLeg = createSceneNode();
 	(*leftLeg).referencePoint = float3(-2.0f, 0.0f, 0.0f);
 	(*leftLeg).vertexArrayObjectID = array[1];
@@ -137,7 +139,7 @@ void buildSceneGraph() {
 	glBindBuffer(GL_ARRAY_BUFFER, colorBuffer[5]);
 	glBufferData(GL_ARRAY_BUFFER, (12 + sizeof(GLfloat))*Steve.head.colours.size(), &Steve.head.colours[0], GL_STATIC_DRAW);
 
-	SceneNode* board = createSceneNode();
+	(*board).vertexArrayObjectID = array[6];
 	glBindVertexArray(array[6]);
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
@@ -146,7 +148,6 @@ void buildSceneGraph() {
 	glBindBuffer(GL_ARRAY_BUFFER, colorBuffer[6]);
 	glBufferData(GL_ARRAY_BUFFER, (12 + sizeof(GLfloat))*chessboard.vertices.size(), &chessboard.colours[0], GL_STATIC_DRAW);
 
-	(*board).vertexArrayObjectID = array[6];
 	addChild(bodyRoot, torso);
 	addChild(torso, head);
 	addChild(torso, leftLeg);
@@ -176,30 +177,13 @@ void task(Mesh data[7]) {
 }
 
 void drawTask() {
-	glm::mat4x4 persMatrix = glm::perspective(3.14f * 2 / 3, 1.0f, 0.1f, 0.0f);
-	glm::mat4x4 viewMatrix = cam.getViewMatrix();
-	for (short i = 0; i < 7; i++) {
-		glBindVertexArray(array[i]);
-		glBindBuffer(GL_ARRAY_BUFFER, buffer[i]);
-		glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, NULL);
-		glBindBuffer(GL_ARRAY_BUFFER, colorBuffer[i]);
-		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, NULL);
-		glUniformMatrix4fv(2, 1, GL_FALSE, glm::value_ptr(persMatrix*viewMatrix));
-		glDrawArrays(GL_TRIANGLE_FAN, 0, 400);
-	}
-
+	visitSceneNode(board, cam.getViewMatrix());
 }
 void initTask() {
-	Mesh data[7] = {
-		Steve.torso,
-		Steve.leftArm,
-		Steve.rightArm,
-		Steve.head,
-		Steve.rightLeg,
-		Steve.leftLeg,
-		chessboard
-	};
-	task(data);
+	glGenVertexArrays(7, &array[0]);
+	glGenBuffers(7, &colorBuffer[0]);
+	glGenBuffers(7, &buffer[0]);
+	buildSceneGraph();
 }
 
 void handleInputs(GLFWwindow* window) {
@@ -215,7 +199,7 @@ void runProgram(GLFWwindow* window)
     glDepthFunc(GL_LESS);
 
     // Configure miscellaneous OpenGL settings
-    //glEnable(GL_CULL_FACE);
+    glEnable(GL_CULL_FACE);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
