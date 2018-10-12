@@ -50,13 +50,13 @@ void visitSceneNode(SceneNode* node, glm::mat4 transformationThusFar) {
 	//legges her fordi det ikke gjøres noe rekursivt i  scenenodebesøket, her blir scenenoden lagt til i array
 	int index = (*node).vertexArrayObjectID;
 	// Do rendering here
-	if (index >= 0) {
+	if (index > 0 ) {
 		glm::mat4x4 persMatrix = glm::perspective(3.14f * 2 / 3, 1.0f, 0.1f, 0.0f);
 		glm::mat4x4 viewMatrix = cam.getViewMatrix();
-		glBindVertexArray(array[index]);
-		glBindBuffer(GL_ARRAY_BUFFER, buffer[index]);
+		glBindVertexArray(index);
+		glBindBuffer(GL_ARRAY_BUFFER, buffer[index-1]);
 		glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, NULL);
-		glBindBuffer(GL_ARRAY_BUFFER, colorBuffer[index]);
+		glBindBuffer(GL_ARRAY_BUFFER, colorBuffer[index-1]);
 		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, NULL);
 		glUniformMatrix4fv(2, 1, GL_FALSE, glm::value_ptr(persMatrix*viewMatrix));
 		glDrawArrays(GL_TRIANGLE_FAN, 0, 400);
@@ -152,14 +152,15 @@ void buildSceneGraph() {
 	glBindBuffer(GL_ARRAY_BUFFER, colorBuffer[6]);
 	glBufferData(GL_ARRAY_BUFFER, (12 + sizeof(GLfloat))*chessboard.vertices.size(), &chessboard.colours[0], GL_STATIC_DRAW);
 
-	addChild(bodyRoot, torso);
 	addChild(torso, head);
 	addChild(torso, leftLeg);
 	addChild(torso, leftArm);
 	addChild(torso, rightArm);
 	addChild(torso, rightLeg);
+	addChild(bodyRoot, torso);
 	addChild(root, bodyRoot);
 	addChild(root, board);
+	
 }
 
 
