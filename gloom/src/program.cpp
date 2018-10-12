@@ -18,9 +18,11 @@ GLuint array[7];
 GLuint buffer[7];
 GLuint colorBuffer[7];
 
+
 Gloom::Camera cam(glm::vec3(1.0f, 1.0f, 10.0f), 5.0f, 0.005f);
 Mesh chessboard = generateChessboard(10, 10, 8, {0.0f,0.0f,0.0f,1.0f}, {1.0f,1.0f,1.0f,1.0f});
 
+SceneNode* root = createSceneNode();
 SceneNode* SteveNode = createSceneNode();
 SceneNode* chessNode = createSceneNode();
 MinecraftCharacter Steve = loadMinecraftCharacterModel("../gloom/res/steve.obj");
@@ -37,20 +39,39 @@ void addChildren(Mesh data) { //omtrent noe sånn som dette vi må implementere, m
 }
 */
 
-/* lagt til fra handoutsnippet i oppgavetekst
+
+
+ //lagt til fra handoutsnippet i oppgavetekst
 void visitSceneNode(SceneNode* node, glm::mat4 transformationThusFar) {
 	// Do transformations here
+	
+	glm::mat4 combinedTransformation = (*node).currentTransformationMatrix*transformationThusFar;
+
 	// Do rendering here
 	for (SceneNode* child : node->children) {
 		visitSceneNode(child, combinedTransformation);
 	}
 }
-*/
+
+void buildSceneGraph() {
+	SceneNode* bodyRoot = createSceneNode();
+	SceneNode* leftLeg = createSceneNode();
+	(*leftLeg).position = float3(-2.0f, 12.0f, 0.0f);
+	SceneNode* rightLeg = createSceneNode();
+	SceneNode* leftArm = createSceneNode();
+	SceneNode* rightArm = createSceneNode();
+	SceneNode* head = createSceneNode();
+	SceneNode* torso = createSceneNode();
+
+
+}
+
 
 void task(Mesh data[7]) {
 	glGenVertexArrays(7, &array[0]);
 	glGenBuffers(7, &colorBuffer[0]);
 	glGenBuffers(7, &buffer[0]);
+	buildSceneGraph();
 	for (short i = 0; i < 7; i++) {
 		//legge til scenenodes til foreldrene her
 		
