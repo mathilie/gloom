@@ -22,7 +22,7 @@ GLuint colorBuffer[7];
 Gloom::Camera cam(glm::vec3(1.0f, 1.0f, 10.0f), 5.0f, 0.005f);
 Mesh chessboard = generateChessboard(10, 10, 8, {0.0f,0.0f,0.0f,1.0f}, {1.0f,1.0f,1.0f,1.0f});
 
-SceneNode* board = createSceneNode();
+SceneNode* root = createSceneNode();
 SceneNode* SteveNode = createSceneNode();
 SceneNode* chessNode = createSceneNode();
 MinecraftCharacter Steve = loadMinecraftCharacterModel("../gloom/res/steve.obj");
@@ -44,23 +44,26 @@ void addChildren(Mesh data) { //omtrent noe sånn som dette vi må implementere, m
  //lagt til fra handoutsnippet i oppgavetekst
 void visitSceneNode(SceneNode* node, glm::mat4 transformationThusFar) {
 	glm::mat4 combinedTransformation = (*node).currentTransformationMatrix*transformationThusFar;
-	for (SceneNode* child : node->children) {
-		visitSceneNode(child, combinedTransformation);
-	}
+
 	// Do transformations here
-	
+
 	//legges her fordi det ikke gjøres noe rekursivt i  scenenodebesøket, her blir scenenoden lagt til i array
 	int index = (*node).vertexArrayObjectID;
 	// Do rendering here
-	glm::mat4x4 persMatrix = glm::perspective(3.14f * 2 / 3, 1.0f, 0.1f, 0.0f);
-	glm::mat4x4 viewMatrix = cam.getViewMatrix();
-	glBindVertexArray(array[index]);
-	glBindBuffer(GL_ARRAY_BUFFER, buffer[index]);
-	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, NULL);
-	glBindBuffer(GL_ARRAY_BUFFER, colorBuffer[index]);
-	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, NULL);
-	glUniformMatrix4fv(2, 1, GL_FALSE, glm::value_ptr(persMatrix*viewMatrix));
-	glDrawArrays(GL_TRIANGLE_FAN, 0, 400);
+	if (index >= 0) {
+		glm::mat4x4 persMatrix = glm::perspective(3.14f * 2 / 3, 1.0f, 0.1f, 0.0f);
+		glm::mat4x4 viewMatrix = cam.getViewMatrix();
+		glBindVertexArray(array[index]);
+		glBindBuffer(GL_ARRAY_BUFFER, buffer[index]);
+		glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, NULL);
+		glBindBuffer(GL_ARRAY_BUFFER, colorBuffer[index]);
+		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, NULL);
+		glUniformMatrix4fv(2, 1, GL_FALSE, glm::value_ptr(persMatrix*viewMatrix));
+		glDrawArrays(GL_TRIANGLE_FAN, 0, 400);
+	}
+	for (SceneNode* child : node->children) {
+		visitSceneNode(child, combinedTransformation);
+	}
 
 }
 
@@ -139,6 +142,7 @@ void buildSceneGraph() {
 	glBindBuffer(GL_ARRAY_BUFFER, colorBuffer[5]);
 	glBufferData(GL_ARRAY_BUFFER, (12 + sizeof(GLfloat))*Steve.head.colours.size(), &Steve.head.colours[0], GL_STATIC_DRAW);
 
+	SceneNode* board = createSceneNode();
 	(*board).vertexArrayObjectID = array[6];
 	glBindVertexArray(array[6]);
 	glEnableVertexAttribArray(0);
@@ -154,11 +158,12 @@ void buildSceneGraph() {
 	addChild(torso, leftArm);
 	addChild(torso, rightArm);
 	addChild(torso, rightLeg);
-	addChild(board, bodyRoot);
+	addChild(root, bodyRoot);
+	addChild(root, board);
 }
 
 
-void task(Mesh data[7]) {
+/*void task(Mesh data[7]) {
 	glGenVertexArrays(7, &array[0]);
 	glGenBuffers(7, &colorBuffer[0]);
 	glGenBuffers(7, &buffer[0]);
@@ -174,10 +179,10 @@ void task(Mesh data[7]) {
 		glBindBuffer(GL_ARRAY_BUFFER, colorBuffer[i]);
 		glBufferData(GL_ARRAY_BUFFER, (12 + sizeof(GLfloat))*data[i].colours.size(), &data[i].colours[0], GL_STATIC_DRAW);
 	}
-}
+}*/
 
 void drawTask() {
-	visitSceneNode(board, cam.getViewMatrix());
+	visitSceneNode(root, cam.getViewMatrix());
 }
 void initTask() {
 	glGenVertexArrays(7, &array[0]);
@@ -199,7 +204,7 @@ void runProgram(GLFWwindow* window)
     glDepthFunc(GL_LESS);
 
     // Configure miscellaneous OpenGL settings
-    glEnable(GL_CULL_FACE);
+    //glEnable(GL_CULL_FACE);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
