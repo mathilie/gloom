@@ -42,11 +42,23 @@ void addChildren(Mesh data) { //omtrent noe sånn som dette vi må implementere, m
 
 
  //lagt til fra handoutsnippet i oppgavetekst
-void visitSceneNode(SceneNode* node, glm::mat4 transformationThusFar) {
+void visitSceneNode(SceneNode* node, glm::mat4 transformationThusFar, Mesh data) {
 	// Do transformations here
-	
 	glm::mat4 combinedTransformation = (*node).currentTransformationMatrix*transformationThusFar;
+	/*
+	printNode(node);
+	stdin = stdout;
+	int id = stdin;
 
+	//legges her fordi det ikke gjøres noe rekursivt i  scenenodebesøket, her blir scenenoden lagt til i array
+	glBindVertexArray(array.insert(array.begin() +1, data));
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer[i]);
+	glBufferData(GL_ARRAY_BUFFER, (12 + sizeof(GLfloat))*data[i].vertices.size(), &data[i].vertices[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, colorBuffer[i]);
+	glBufferData(GL_ARRAY_BUFFER, (12 + sizeof(GLfloat))*data[i].colours.size(), &data[i].colours[0], GL_STATIC_DRAW);
+	*/
 	// Do rendering here
 	for (SceneNode* child : node->children) {
 		visitSceneNode(child, combinedTransformation);
@@ -85,6 +97,7 @@ void buildSceneGraph() {
 
 
 void task(Mesh data[7]) {
+	std::vector<int> v = { 0, 0, 0, 0, 0, 0, 0 };
 	glGenVertexArrays(7, &array[0]);
 	glGenBuffers(7, &colorBuffer[0]);
 	glGenBuffers(7, &buffer[0]);
