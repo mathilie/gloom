@@ -21,9 +21,21 @@ GLuint colorBuffer[7];
 Gloom::Camera cam(glm::vec3(1.0f, 1.0f, 10.0f), 5.0f, 0.005f);
 Mesh chessboard = generateChessboard(10, 10, 8, {0.0f,0.0f,0.0f,1.0f}, {1.0f,1.0f,1.0f,1.0f});
 
-SceneNode* objStack = createSceneNode();
-SceneNode* chessStack = createSceneNode();
+SceneNode* SteveNode = createSceneNode();
+SceneNode* chessNode = createSceneNode();
 MinecraftCharacter Steve = loadMinecraftCharacterModel("../gloom/res/steve.obj");
+
+/* her er en ide til hvordan det kan løses
+void addChildren(Mesh data) { //omtrent noe sånn som dette vi må implementere, meget mulig det kan gjøres i hovedloopen med noen if/else løsninger. vi må instantiere hver node med koordinater. Deretter kan vi legge dem som barn 
+	for (size_t i = 0; i < length; i++)
+	{
+
+		SceneNode* child = createSceneNode(float3 position, float3 rotation, float3 referencePoint, int VAOID, int VAOIC); // dette er ikke lov tror jeg
+		addChild(SteveNode, child);
+	}
+	
+}
+*/
 
 /* lagt til fra handoutsnippet i oppgavetekst
 void visitSceneNode(SceneNode* node, glm::mat4 transformationThusFar) {
