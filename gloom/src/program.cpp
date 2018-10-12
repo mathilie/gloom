@@ -14,9 +14,9 @@
 #include <mesh.hpp>
 #include "sceneGraph.hpp"
 
-GLuint array[6];
-GLuint buffer[6];
-GLuint colorBuffer[6];
+GLuint array[7];
+GLuint buffer[7];
+GLuint colorBuffer[7];
 
 Gloom::Camera cam(glm::vec3(1.0f, 1.0f, 10.0f), 5.0f, 0.005f);
 Mesh chessboard = generateChessboard(10, 10, 8, {0.0f,0.0f,0.0f,1.0f}, {1.0f,1.0f,1.0f,1.0f});
@@ -80,7 +80,7 @@ void runProgram(GLFWwindow* window)
     glDepthFunc(GL_LESS);
 
     // Configure miscellaneous OpenGL settings
-    glEnable(GL_CULL_FACE);
+    //glEnable(GL_CULL_FACE);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
