@@ -59,6 +59,7 @@ void updatePositions() {
 
 void buildSceneGraph() {
 	SceneNode* bodyRoot = createSceneNode();
+	(*bodyRoot).position = float3(0.0f, 0.0f, 0.0f);
 	SceneNode* torso = createSceneNode();
 	(*torso).position = float3(0.0f, 12.0f, 0.0f);
 	SceneNode* leftLeg = createSceneNode();
@@ -71,7 +72,6 @@ void buildSceneGraph() {
 	(*rightArm).position = float3(4.0f, 12.0f, 0.0f);
 	SceneNode* head = createSceneNode();
 	(*head).position = float3(0.0f, 12.0f, 0.0f);
-	SceneNode* torso = createSceneNode();
 	SceneNode* board = createSceneNode();
 	addChild(bodyRoot, torso);
 	addChild(torso, head);
