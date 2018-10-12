@@ -23,22 +23,7 @@ Gloom::Camera cam(glm::vec3(1.0f, 1.0f, 10.0f), 5.0f, 0.005f);
 Mesh chessboard = generateChessboard(10, 10, 8, {0.0f,0.0f,0.0f,1.0f}, {1.0f,1.0f,1.0f,1.0f});
 
 SceneNode* root = createSceneNode();
-SceneNode* SteveNode = createSceneNode();
-SceneNode* chessNode = createSceneNode();
 MinecraftCharacter Steve = loadMinecraftCharacterModel("../gloom/res/steve.obj");
-
-/* her er en ide til hvordan det kan løses
-void addChildren(Mesh data) { //omtrent noe sånn som dette vi må implementere, meget mulig det kan gjøres i hovedloopen med noen if/else løsninger. vi må instantiere hver node med koordinater. Deretter kan vi legge dem som barn 
-	for (size_t i = 0; i < length; i++)
-	{
-
-		SceneNode* child = createSceneNode(float3 position, float3 rotation, float3 referencePoint, int VAOID, int VAOIC); // dette er ikke lov tror jeg
-		addChild(SteveNode, child);
-	}
-	
-}
-*/
-
 
 
  //lagt til fra handoutsnippet i oppgavetekst
@@ -163,25 +148,6 @@ void buildSceneGraph() {
 	
 }
 
-
-/*void task(Mesh data[7]) {
-	glGenVertexArrays(7, &array[0]);
-	glGenBuffers(7, &colorBuffer[0]);
-	glGenBuffers(7, &buffer[0]);
-	buildSceneGraph();
-	for (short i = 0; i < 7; i++) {
-		//legge til scenenodes til foreldrene her
-		
-		glBindVertexArray(array[i]);
-		glEnableVertexAttribArray(0);
-		glEnableVertexAttribArray(1);
-		glBindBuffer(GL_ARRAY_BUFFER, buffer[i]);
-		glBufferData(GL_ARRAY_BUFFER, (12 + sizeof(GLfloat))*data[i].vertices.size(), &data[i].vertices[0], GL_STATIC_DRAW);
-		glBindBuffer(GL_ARRAY_BUFFER, colorBuffer[i]);
-		glBufferData(GL_ARRAY_BUFFER, (12 + sizeof(GLfloat))*data[i].colours.size(), &data[i].colours[0], GL_STATIC_DRAW);
-	}
-}*/
-
 void drawTask() {
 	visitSceneNode(root, cam.getViewMatrix());
 }
@@ -198,6 +164,7 @@ void handleInputs(GLFWwindow* window) {
 	glfwGetCursorPos(window, &xpos, &ypos);
 	cam.handleCursorPosInput(xpos, ypos);
 }
+
 void runProgram(GLFWwindow* window)
 {
     // Enable depth (Z) buffer (accept "closest" fragment)
