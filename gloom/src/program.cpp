@@ -25,11 +25,23 @@ SceneNode* objStack = createSceneNode();
 SceneNode* chessStack = createSceneNode();
 MinecraftCharacter Steve = loadMinecraftCharacterModel("../gloom/res/steve.obj");
 
+/* lagt til fra handoutsnippet i oppgavetekst
+void visitSceneNode(SceneNode* node, glm::mat4 transformationThusFar) {
+	// Do transformations here
+	// Do rendering here
+	for (SceneNode* child : node->children) {
+		visitSceneNode(child, combinedTransformation);
+	}
+}
+*/
+
 void task(Mesh data[7]) {
 	glGenVertexArrays(7, &array[0]);
 	glGenBuffers(7, &colorBuffer[0]);
 	glGenBuffers(7, &buffer[0]);
 	for (short i = 0; i < 7; i++) {
+		//legge til scenenodes til foreldrene her
+		
 		glBindVertexArray(array[i]);
 		glEnableVertexAttribArray(0);
 		glEnableVertexAttribArray(1);
@@ -56,12 +68,12 @@ void drawTask() {
 }
 void initTask() {
 	Mesh data[7] = {
+		Steve.torso,
 		Steve.leftArm,
 		Steve.rightArm,
 		Steve.head,
 		Steve.rightLeg,
 		Steve.leftLeg,
-		Steve.torso,
 		chessboard
 	};
 	task(data);
