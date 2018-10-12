@@ -42,24 +42,22 @@ void addChildren(Mesh data) { //omtrent noe sånn som dette vi må implementere, m
 
 
  //lagt til fra handoutsnippet i oppgavetekst
-void visitSceneNode(SceneNode* node, glm::mat4 transformationThusFar, Mesh data) {
+void visitSceneNode(SceneNode* node, glm::mat4 transformationThusFar) {
 	// Do transformations here
 	glm::mat4 combinedTransformation = (*node).currentTransformationMatrix*transformationThusFar;
-	/*
-	printNode(node);
-	stdin = stdout;
-	int id = stdin;
-
+	
 	//legges her fordi det ikke gjøres noe rekursivt i  scenenodebesøket, her blir scenenoden lagt til i array
-	glBindVertexArray(array.insert(array.begin() +1, data));
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
-	glBindBuffer(GL_ARRAY_BUFFER, buffer[i]);
-	glBufferData(GL_ARRAY_BUFFER, (12 + sizeof(GLfloat))*data[i].vertices.size(), &data[i].vertices[0], GL_STATIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, colorBuffer[i]);
-	glBufferData(GL_ARRAY_BUFFER, (12 + sizeof(GLfloat))*data[i].colours.size(), &data[i].colours[0], GL_STATIC_DRAW);
-	*/
+	int index = (*node).vertexArrayObjectID;
 	// Do rendering here
+	glm::mat4x4 persMatrix = glm::perspective(3.14f * 2 / 3, 1.0f, 0.1f, 0.0f);
+	glm::mat4x4 viewMatrix = cam.getViewMatrix();
+	glBindVertexArray(array[index]);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer[index]);
+	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, NULL);
+	glBindBuffer(GL_ARRAY_BUFFER, colorBuffer[index]);
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, NULL);
+	glUniformMatrix4fv(2, 1, GL_FALSE, glm::value_ptr(persMatrix*viewMatrix));
+	glDrawArrays(GL_TRIANGLE_FAN, 0, 400);
 	for (SceneNode* child : node->children) {
 		visitSceneNode(child, combinedTransformation);
 	}
@@ -72,25 +70,82 @@ void updatePositions() {
 void buildSceneGraph() {
 	SceneNode* bodyRoot = createSceneNode();
 	(*bodyRoot).referencePoint = float3(0.0f, 0.0f, 0.0f);
+
 	SceneNode* torso = createSceneNode();
 	(*torso).referencePoint = float3(0.0f, 12.0f, 0.0f);
 	(*torso).vertexArrayObjectID = array[0];
+	glBindVertexArray(array[0]);
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer[0]);
+	glBufferData(GL_ARRAY_BUFFER, (12 + sizeof(GLfloat))*Steve.torso.vertices.size(), &Steve.torso.vertices[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, colorBuffer[0]);
+	glBufferData(GL_ARRAY_BUFFER, (12 + sizeof(GLfloat))*Steve.torso.colours.size(), &Steve.torso.colours[0], GL_STATIC_DRAW);
+
 	SceneNode* leftLeg = createSceneNode();
 	(*leftLeg).referencePoint = float3(-2.0f, 0.0f, 0.0f);
 	(*leftLeg).vertexArrayObjectID = array[1];
+	glBindVertexArray(array[1]);
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer[1]);
+	glBufferData(GL_ARRAY_BUFFER, (12 + sizeof(GLfloat))*Steve.leftLeg.vertices.size(), &Steve.leftLeg.vertices[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, colorBuffer[1]);
+	glBufferData(GL_ARRAY_BUFFER, (12 + sizeof(GLfloat))*Steve.leftLeg.colours.size(), &Steve.leftLeg.colours[0], GL_STATIC_DRAW);
+
 	SceneNode* rightLeg = createSceneNode();
 	(*rightLeg).referencePoint = float3(2.0f, 0.0f, 0.0f);
 	(*rightLeg).vertexArrayObjectID = array[2];
+	glBindVertexArray(array[2]);
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer[2]);
+	glBufferData(GL_ARRAY_BUFFER, (12 + sizeof(GLfloat))*Steve.rightLeg.vertices.size(), &Steve.rightLeg.vertices[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, colorBuffer[2]);
+	glBufferData(GL_ARRAY_BUFFER, (12 + sizeof(GLfloat))*Steve.rightLeg.colours.size(), &Steve.rightLeg.colours[0], GL_STATIC_DRAW);
+
 	SceneNode* leftArm = createSceneNode();
 	(*leftArm).referencePoint = float3(-4.0f, 12.0f, 0.0f);
 	(*leftArm).vertexArrayObjectID = array[3];
+	glBindVertexArray(array[3]);
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer[3]);
+	glBufferData(GL_ARRAY_BUFFER, (12 + sizeof(GLfloat))*Steve.leftArm.vertices.size(), &Steve.leftArm.vertices[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, colorBuffer[3]);
+	glBufferData(GL_ARRAY_BUFFER, (12 + sizeof(GLfloat))*Steve.leftArm.colours.size(), &Steve.leftArm.colours[0], GL_STATIC_DRAW);
+
 	SceneNode* rightArm = createSceneNode();
 	(*rightArm).referencePoint = float3(4.0f, 12.0f, 0.0f);
 	(*rightArm).vertexArrayObjectID = array[4];
+	glBindVertexArray(array[4]);
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer[4]);
+	glBufferData(GL_ARRAY_BUFFER, (12 + sizeof(GLfloat))*Steve.rightArm.vertices.size(), &Steve.rightArm.vertices[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, colorBuffer[4]);
+	glBufferData(GL_ARRAY_BUFFER, (12 + sizeof(GLfloat))*Steve.rightArm.colours.size(), &Steve.rightArm.colours[0], GL_STATIC_DRAW);
+
 	SceneNode* head = createSceneNode();
 	(*head).referencePoint = float3(0.0f, 12.0f, 0.0f);
 	(*head).vertexArrayObjectID = array[5];
+	glBindVertexArray(array[5]);
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer[5]);
+	glBufferData(GL_ARRAY_BUFFER, (12 + sizeof(GLfloat))*Steve.head.vertices.size(), &Steve.head.vertices[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, colorBuffer[5]);
+	glBufferData(GL_ARRAY_BUFFER, (12 + sizeof(GLfloat))*Steve.head.colours.size(), &Steve.head.colours[0], GL_STATIC_DRAW);
+
 	SceneNode* board = createSceneNode();
+	glBindVertexArray(array[6]);
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer[6]);
+	glBufferData(GL_ARRAY_BUFFER, (12 + sizeof(GLfloat))*chessboard.vertices.size(), &chessboard.vertices[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, colorBuffer[6]);
+	glBufferData(GL_ARRAY_BUFFER, (12 + sizeof(GLfloat))*chessboard.vertices.size(), &chessboard.colours[0], GL_STATIC_DRAW);
+
 	(*board).vertexArrayObjectID = array[6];
 	addChild(bodyRoot, torso);
 	addChild(torso, head);
@@ -99,12 +154,10 @@ void buildSceneGraph() {
 	addChild(torso, rightArm);
 	addChild(torso, rightLeg);
 	addChild(board, bodyRoot);
-
 }
 
 
 void task(Mesh data[7]) {
-	std::vector<int> v = { 0, 0, 0, 0, 0, 0, 0 };
 	glGenVertexArrays(7, &array[0]);
 	glGenBuffers(7, &colorBuffer[0]);
 	glGenBuffers(7, &buffer[0]);
