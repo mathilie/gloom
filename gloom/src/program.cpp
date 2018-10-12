@@ -71,19 +71,19 @@ void updatePositions() {
 
 void buildSceneGraph() {
 	SceneNode* bodyRoot = createSceneNode();
-	(*bodyRoot).position = float3(0.0f, 0.0f, 0.0f);
+	(*bodyRoot).referencePoint = float3(0.0f, 0.0f, 0.0f);
 	SceneNode* torso = createSceneNode();
-	(*torso).position = float3(0.0f, 12.0f, 0.0f);
+	(*torso).referencePoint = float3(0.0f, 12.0f, 0.0f);
 	SceneNode* leftLeg = createSceneNode();
-	(*leftLeg).position = float3(-2.0f, 0.0f, 0.0f);
+	(*leftLeg).referencePoint = float3(-2.0f, 0.0f, 0.0f);
 	SceneNode* rightLeg = createSceneNode();
-	(*rightLeg).position = float3(2.0f, 0.0f, 0.0f);
+	(*rightLeg).referencePoint = float3(2.0f, 0.0f, 0.0f);
 	SceneNode* leftArm = createSceneNode();
-	(*leftArm).position = float3(-4.0f, 12.0f, 0.0f);
+	(*leftArm).referencePoint = float3(-4.0f, 12.0f, 0.0f);
 	SceneNode* rightArm = createSceneNode();
-	(*rightArm).position = float3(4.0f, 12.0f, 0.0f);
+	(*rightArm).referencePoint = float3(4.0f, 12.0f, 0.0f);
 	SceneNode* head = createSceneNode();
-	(*head).position = float3(0.0f, 12.0f, 0.0f);
+	(*head).referencePoint = float3(0.0f, 12.0f, 0.0f);
 	SceneNode* board = createSceneNode();
 	addChild(bodyRoot, torso);
 	addChild(torso, head);
@@ -117,14 +117,14 @@ void task(Mesh data[7]) {
 
 void drawTask() {
 	glm::mat4x4 persMatrix = glm::perspective(3.14f * 2 / 3, 1.0f, 0.1f, 0.0f);
-	glm::mat4x4 transformation = persMatrix*cam.getViewMatrix();
+	glm::mat4x4 viewMatrix = cam.getViewMatrix();
 	for (short i = 0; i < 7; i++) {
 		glBindVertexArray(array[i]);
 		glBindBuffer(GL_ARRAY_BUFFER, buffer[i]);
 		glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, NULL);
 		glBindBuffer(GL_ARRAY_BUFFER, colorBuffer[i]);
 		glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, NULL);
-		glUniformMatrix4fv(2, 1, GL_FALSE, glm::value_ptr(transformation));
+		glUniformMatrix4fv(2, 1, GL_FALSE, glm::value_ptr(persMatrix*viewMatrix));
 		glDrawArrays(GL_TRIANGLE_FAN, 0, 400);
 	}
 
