@@ -62,8 +62,14 @@ void buildSceneGraph() {
 	SceneNode* rightArm = createSceneNode();
 	SceneNode* head = createSceneNode();
 	SceneNode* torso = createSceneNode();
-
-
+	SceneNode* board = createSceneNode();
+	addChild(bodyRoot, torso);
+	addChild(torso, head);
+	addChild(torso, leftLeg);
+	addChild(torso, leftArm);
+	addChild(torso, rightArm);
+	addChild(torso, rightLeg);
+	addChild(board, bodyRoot);
 }
 
 
