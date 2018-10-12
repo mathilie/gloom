@@ -24,11 +24,11 @@ GLfloat transmatrix[] = {
 	0.0f, 0.0f, 1.0f, 0.0f,
 	0.0f, 0.0f, 0.0f, 1.0f
 };
-glm::vec3 cameraPosition = { 0.0f, 0.0f, -1.0f };
+glm::vec3 cameraPosition = { 0.0f, -1.0f, 0.0f };
 glm::vec2 cameraAngle = {0.0f,0.0f};
 
-Gloom::Camera cam(glm::vec3(0.0f, 0.0f, 2.0f), 5.0f, 0.005f);
-Mesh chessboard = generateChessboard(100, 100, 5, {0.0f,0.0f,0.0f,1.0f}, {1.0f,1.0f,1.0f,1.0f});
+Gloom::Camera cam(glm::vec3(1.0f, 1.0f, 10.0f), 5.0f, 0.005f);
+Mesh chessboard = generateChessboard(10, 10, 1, {0.0f,0.0f,0.0f,1.0f}, {1.0f,1.0f,1.0f,1.0f});
 
 SceneNode* objStack = createSceneNode();
 SceneNode* chessStack = createSceneNode();
@@ -36,7 +36,7 @@ MinecraftCharacter Steve = loadMinecraftCharacterModel("../gloom/res/steve.obj")
 
 
 
-void task4() {
+void task4(Mesh data) {
 	/*static const GLfloat coords[] = {
 		-1.0f, -1.0f, 0.5f,
 		1.0f, -1.0f, 0.5f,
@@ -66,13 +66,16 @@ void task4() {
 	glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
 	//head
-	glGenBuffers(2, &buffer);
+	glGenBuffers(1, &buffer);
 	glBindBuffer(GL_ARRAY_BUFFER, buffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(head), head, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, (12+sizeof(GLfloat))*data.vertices.size(), &data.vertices[0], GL_STATIC_DRAW);
+	
 	//torso
-	glGenBuffers(2, &buffer);
-	glBindBuffer(GL_ARRAY_BUFFER, buffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(torso), torso, GL_STATIC_DRAW);
+	glGenBuffers(1, &colorBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, colorBuffer);
+	glBufferData(GL_ARRAY_BUFFER, (12+sizeof(GLfloat))*data.colours.size(), &data.colours[0], GL_STATIC_DRAW);
+
+	/*
 	//leftarm
 	glGenBuffers(2, &buffer);
 	glBindBuffer(GL_ARRAY_BUFFER, buffer);
@@ -88,7 +91,7 @@ void task4() {
 	//rightleg
 	glGenBuffers(2, &buffer);
 	glBindBuffer(GL_ARRAY_BUFFER, buffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(legr), legr, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(legr), legr, GL_STATIC_DRAW);*/
 }
 
 void drawTask4() {
@@ -96,19 +99,31 @@ void drawTask4() {
 	glm::mat4x4 transformation = persMatrix*cam.getViewMatrix();
 	glBindVertexArray(array);
 	glBindBuffer(GL_ARRAY_BUFFER, buffer);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, NULL);
 	glBindBuffer(GL_ARRAY_BUFFER, colorBuffer);
 	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, NULL);
 	glUniformMatrix4fv(2, 1, GL_FALSE, glm::value_ptr(transformation));
-	glDrawArrays(GL_TRIANGLES, 0, 72);
+	glDrawArrays(GL_TRIANGLE_FAN, 0, 40000);
 }
 void initTask() {
-	task4();
+	task4(chessboard);
 }
 
 void drawTask() {
 	drawTask4();
 }
+
+/*void drawMesh(Mesh data) {
+	
+
+	glBindVertexArray(array);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+	glBindBuffer(GL_ARRAY_BUFFER, colorBuffer);
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, NULL);
+	glUniformMatrix4fv(2, 1, GL_FALSE, glm::value_ptr(transformation));
+	glDrawArrays(GL_TRIANGLES, 0, 72);
+}*/
 
 void handleInputs(GLFWwindow* window) {
 	handleKeyboardInput(window);
@@ -123,7 +138,7 @@ void runProgram(GLFWwindow* window)
     glDepthFunc(GL_LESS);
 
     // Configure miscellaneous OpenGL settings
-    glEnable(GL_CULL_FACE);
+    //glEnable(GL_CULL_FACE);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -133,7 +148,6 @@ void runProgram(GLFWwindow* window)
 
     // Set up your scene here (create Vertex Array Objects, etc.)
 	initTask();
-
 
 	//makeAndLoadVertexes(coords, 75, colors, 75);
     // Rendering Loop
