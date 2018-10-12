@@ -53,17 +53,24 @@ void visitSceneNode(SceneNode* node, glm::mat4 transformationThusFar) {
 	}
 }
 
+void updatePositions() {
+
+}
+
 void buildSceneGraph() {
 	SceneNode* bodyRoot = createSceneNode();
-	SceneNode* leftLeg = createSceneNode();
-	(*leftLeg).position = float3(-2.0f, 12.0f, 0.0f);
-	SceneNode* rightLeg = createSceneNode();
-	SceneNode* leftArm = createSceneNode();
-	SceneNode* rightArm = createSceneNode();
-	SceneNode* head = createSceneNode();
 	SceneNode* torso = createSceneNode();
-
-
+	(*torso).position = float3(0.0f, 12.0f, 0.0f);
+	SceneNode* leftLeg = createSceneNode();
+	(*leftLeg).position = float3(-2.0f, 0.0f, 0.0f);
+	SceneNode* rightLeg = createSceneNode();
+	(*rightLeg).position = float3(2.0f, 0.0f, 0.0f);
+	SceneNode* leftArm = createSceneNode();
+	(*leftArm).position = float3(-4.0f, 12.0f, 0.0f);
+	SceneNode* rightArm = createSceneNode();
+	(*rightArm).position = float3(4.0f, 12.0f, 0.0f);
+	SceneNode* head = createSceneNode();
+	(*head).position = float3(0.0f, 12.0f, 0.0f);
 }
 
 
